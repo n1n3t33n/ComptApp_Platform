@@ -11,7 +11,8 @@ from expenses.models import Depense
 
 @method_decorator(login_required, name="dispatch")
 class ModificationDepenseView(View):
-    template_name = "expenses/form_depense.html"
+    
+    template_name = "expenses/crud/form_depense.html"
 
     def get(self, request, pk):
         depense = get_object_or_404(Depense, pk=pk)

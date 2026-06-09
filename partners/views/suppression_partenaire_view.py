@@ -10,7 +10,8 @@ from partners.models import Partenaire
 
 @method_decorator(login_required, name="dispatch")
 class SuppressionPartenaireView(View):
-    template_name = "partners/confirmation_suppression.html"
+    
+    template_name = "partners/crud/confirmation_suppression.html"
 
     def get(self, request, pk):
         partenaire = get_object_or_404(Partenaire, pk=pk)

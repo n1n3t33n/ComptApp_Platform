@@ -10,7 +10,8 @@ from expenses.forms import DepenseForm
 
 @method_decorator(login_required, name="dispatch")
 class AjoutDepenseView(View):
-    template_name = "expenses/form_depense.html"
+    
+    template_name = "expenses/crud/form_depense.html"
 
     def get(self, request):
         return render(

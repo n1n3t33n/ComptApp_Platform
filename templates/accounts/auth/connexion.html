@@ -1,0 +1,81 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion — ComptApp Platform</title>
+    <link rel="stylesheet" href="{% static 'css/auth.css' %}">
+</head>
+<body>
+<div class="auth-page">
+
+    <div class="auth-visuel">
+        <div class="auth-marque">
+            <span class="logo-mark">
+                <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle class="coin" cx="24" cy="24" r="22" fill="#dcfaf8" stroke="#16dbcc" stroke-width="2"/>
+                    <rect x="14" y="24" width="4.5" height="10" rx="2" fill="#16dbcc"/>
+                    <rect x="21.5" y="18" width="4.5" height="16" rx="2" fill="#ffffff"/>
+                    <rect x="29" y="21" width="4.5" height="13" rx="2" fill="#fc7900"/>
+                </svg>
+            </span>
+            <span class="auth-marque__nom">Compt<span>App</span></span>
+        </div>
+
+        <h2 class="auth-visuel__titre">La comptabilité<br>simple et sereine.</h2>
+        <p class="auth-visuel__texte">
+            Gérez vos recettes, dépenses et partenaires en toute simplicité.
+            La plateforme pensée pour les petites entreprises ivoiriennes.
+        </p>
+
+        <div class="auth-visuel__points">
+            <div class="auth-visuel__point">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                Suivi des recettes et dépenses en temps réel
+            </div>
+            <div class="auth-visuel__point">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                Rapports comptables et bilans automatiques
+            </div>
+            <div class="auth-visuel__point">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                Connexion sécurisée à double authentification
+            </div>
+        </div>
+    </div>
+
+    <div class="auth-form-wrap">
+        <div class="auth-card">
+            <h1 class="auth-card__titre">Bienvenue 👋</h1>
+            <p class="auth-card__sous-titre">Connectez-vous pour accéder à votre espace.</p>
+
+            {% if form.non_field_errors %}
+                <div class="auth-erreur">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                    {{ form.non_field_errors.0 }}
+                </div>
+            {% endif %}
+
+            <form method="post" class="auth-form" novalidate>
+                {% csrf_token %}
+
+                <div class="form-groupe">
+                    <label for="id_email">Adresse email</label>
+                    {{ form.email }}
+                    {% if form.email.errors %}<div class="form-erreur">{{ form.email.errors.0 }}</div>{% endif %}
+                </div>
+
+                <div class="form-groupe">
+                    <label for="id_password">Mot de passe</label>
+                    {{ form.password }}
+                    {% if form.password.errors %}<div class="form-erreur">{{ form.password.errors.0 }}</div>{% endif %}
+                </div>
+
+                <button type="submit" class="auth-btn">Se connecter</button>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

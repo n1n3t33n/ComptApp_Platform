@@ -9,7 +9,8 @@ from partners.models import Partenaire
 
 @method_decorator(login_required, name="dispatch")
 class ListePartenairesView(View):
-    template_name = "partners/liste_partenaires.html"
+    
+    template_name = "partners/crud/liste_partenaires.html"
 
     def get(self, request):
         qs = Partenaire.objects.all()

@@ -1,0 +1,15 @@
+{# Fragment réutilisable : filtre de période (du / au) pour les rapports #}
+<div class="carte" style="margin-bottom:24px;">
+    <form method="get" class="filtres">
+        <div class="form-groupe" style="min-width:160px;">
+            <label>Du</label>
+            <input type="date" name="date_debut" value="{{ date_debut }}">
+        </div>
+        <div class="form-groupe" style="min-width:160px;">
+            <label>Au</label>
+            <input type="date" name="date_fin" value="{{ date_fin }}">
+        </div>
+        <button type="submit" class="btn btn--primaire">Appliquer</button>
+        <a href="{% url action_url %}" class="btn btn--ghost">Toute la période</a>
+    </form>
+</div>

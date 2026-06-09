@@ -1,0 +1,75 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vérification — ComptApp Platform</title>
+    <link rel="stylesheet" href="{% static 'css/auth.css' %}">
+</head>
+<body>
+<div class="auth-page">
+
+    <div class="auth-visuel">
+        <div class="auth-marque">
+            <span class="logo-mark">
+                <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle class="coin" cx="24" cy="24" r="22" fill="#dcfaf8" stroke="#16dbcc" stroke-width="2"/>
+                    <rect x="14" y="24" width="4.5" height="10" rx="2" fill="#16dbcc"/>
+                    <rect x="21.5" y="18" width="4.5" height="16" rx="2" fill="#ffffff"/>
+                    <rect x="29" y="21" width="4.5" height="13" rx="2" fill="#fc7900"/>
+                </svg>
+            </span>
+            <span class="auth-marque__nom">Compt<span>App</span></span>
+        </div>
+
+        <h2 class="auth-visuel__titre">Sécurité<br>renforcée.</h2>
+        <p class="auth-visuel__texte">
+            Pour protéger votre compte, nous vous avons envoyé un code de vérification à usage unique.
+            Saisissez-le pour finaliser votre connexion.
+        </p>
+    </div>
+
+    <div class="auth-form-wrap">
+        <div class="auth-card">
+            <h1 class="auth-card__titre">Vérification</h1>
+            <p class="auth-card__sous-titre">Saisissez le code reçu par email.</p>
+
+            <div class="otp-info">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                Un code à 6 chiffres a été envoyé à votre adresse email. Il expire dans quelques minutes.
+            </div>
+
+            {% if form.non_field_errors %}
+                <div class="auth-erreur">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                    {{ form.non_field_errors.0 }}
+                </div>
+            {% endif %}
+
+            <form method="post" class="auth-form" novalidate>
+                {% csrf_token %}
+
+                <div class="form-groupe">
+                    <label for="id_code_otp">Code de vérification</label>
+                    {{ form.code_otp }}
+                    {% if form.code_otp.errors %}<div class="form-erreur">{{ form.code_otp.errors.0 }}</div>{% endif %}
+                </div>
+
+                <button type="submit" class="auth-btn">Vérifier et continuer</button>
+            </form>
+
+            <p style="text-align:center; margin-top:22px; font-size:0.85rem; color:#718ebf;">
+                <a href="{% url 'accounts:connexion' %}" style="color:#1814f3; font-weight:600;">← Retour à la connexion</a>
+            </p>
+        </div>
+    </div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var champ = document.getElementById('id_code_otp');
+        if (champ) { champ.classList.add('otp-input'); champ.setAttribute('maxlength', '6'); }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,61 @@
+{% extends "base/base.html" %}
+
+{% block titre %}États par catégorie — ComptApp{% endblock %}
+{% block titre_page %}États par catégorie{% endblock %}
+
+{% block contenu %}
+<div class="page-header">
+    <div>
+        <h1 class="page-header__titre">États par catégorie</h1>
+        <p class="page-header__sous-titre">Répartition des recettes et dépenses par catégorie.</p>
+    </div>
+    <a href="{% url 'reports:export_pdf' 'etats' %}?date_debut={{ date_debut }}&date_fin={{ date_fin }}" class="btn btn--primaire">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        Exporter en PDF
+    </a>
+</div>
+
+{% include "reports/_filtres_periode.html" with action_url='reports:etats' %}
+
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:24px;" class="etats-grid">
+    <div class="carte">
+        <h2 class="carte__titre">Recettes par catégorie</h2>
+        {% if etats.recettes_par_categorie %}
+        <div class="table-wrap">
+            <table class="data">
+                <thead><tr><th>Catégorie</th><th style="text-align:right;">Total</th></tr></thead>
+                <tbody>
+                    {% for ligne in etats.recettes_par_categorie %}
+                    <tr>
+                        <td><span class="badge badge--recette">{{ ligne.categorie__libelle }}</span></td>
+                        <td style="text-align:right;" class="montant montant--recette">+{{ ligne.total|floatformat:0 }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}<p style="color:var(--bleu-clair); text-align:center; padding:24px 0;">Aucune recette sur cette période.</p>{% endif %}
+    </div>
+
+    <div class="carte">
+        <h2 class="carte__titre">Dépenses par catégorie</h2>
+        {% if etats.depenses_par_categorie %}
+        <div class="table-wrap">
+            <table class="data">
+                <thead><tr><th>Catégorie</th><th style="text-align:right;">Total</th></tr></thead>
+                <tbody>
+                    {% for ligne in etats.depenses_par_categorie %}
+                    <tr>
+                        <td><span class="badge badge--depense">{{ ligne.categorie__libelle }}</span></td>
+                        <td style="text-align:right;" class="montant montant--depense">-{{ ligne.total|floatformat:0 }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}<p style="color:var(--bleu-clair); text-align:center; padding:24px 0;">Aucune dépense sur cette période.</p>{% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}<style>@media(max-width:900px){.etats-grid{grid-template-columns:1fr !important;}}</style>{% endblock %}

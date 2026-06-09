@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<style>
+    @page { size: A4; margin: 1.5cm; }
+    * { font-family: Helvetica, Arial, sans-serif; }
+    body { color: #343c6a; font-size: 11px; }
+
+    .entete { width: 100%; border-bottom: 3px solid #1814f3; padding-bottom: 10px; margin-bottom: 16px; }
+    .entete td { vertical-align: middle; }
+    .marque { font-size: 20px; font-weight: bold; color: #343c6a; }
+    .marque span { color: #277f65; }
+    .doc-titre { font-size: 14px; color: #718ebf; text-align: right; }
+
+    .periode { color: #718ebf; font-size: 10px; margin-bottom: 16px; }
+
+    h3 { font-size: 12px; margin: 16px 0 6px; color: #343c6a; }
+    table.cat { width: 100%; border-collapse: collapse; margin-bottom: 16px; }
+    table.cat th { background: #f5f7fa; text-align: left; padding: 7px 8px; font-size: 10px; color: #718ebf; border-bottom: 2px solid #dfeaf2; }
+    table.cat td { padding: 6px 8px; border-bottom: 1px solid #f2f4f7; }
+    .r { text-align: right; }
+    .recette { color: #277f65; font-weight: bold; }
+    .depense { color: #fc7900; font-weight: bold; }
+    .pied { margin-top: 20px; text-align: center; color: #9199af; font-size: 9px; border-top: 1px solid #dfeaf2; padding-top: 8px; }
+</style>
+</head>
+<body>
+
+    <table class="entete">
+        <tr>
+            <td><div class="marque">Compt<span>App</span></div></td>
+            <td><div class="doc-titre">États par catégorie</div></td>
+        </tr>
+    </table>
+
+    <div class="periode">
+        Période :
+        {% if date_debut %}du {{ date_debut }}{% else %}depuis le début{% endif %}
+        {% if date_fin %}au {{ date_fin }}{% endif %}
+        — Édité le {% now "d/m/Y à H:i" %}
+    </div>
+
+    <h3>Recettes par catégorie</h3>
+    <table class="cat">
+        <thead>
+            <tr><th>Catégorie</th><th class="r">Total</th></tr>
+        </thead>
+        <tbody>
+            {% for ligne in etats.recettes_par_categorie %}
+            <tr>
+                <td>{{ ligne.categorie__libelle }}</td>
+                <td class="r recette">+{{ ligne.total|floatformat:0 }} FCFA</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="2" style="text-align:center; color:#9199af; padding:12px;">Aucune recette.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h3>Dépenses par catégorie</h3>
+    <table class="cat">
+        <thead>
+            <tr><th>Catégorie</th><th class="r">Total</th></tr>
+        </thead>
+        <tbody>
+            {% for ligne in etats.depenses_par_categorie %}
+            <tr>
+                <td>{{ ligne.categorie__libelle }}</td>
+                <td class="r depense">-{{ ligne.total|floatformat:0 }} FCFA</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="2" style="text-align:center; color:#9199af; padding:12px;">Aucune dépense.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="pied">ComptApp Platform — Plateforme ivoirienne de comptabilité — Document généré automatiquement</div>
+</body>
+</html>

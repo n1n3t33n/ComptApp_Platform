@@ -1,0 +1,58 @@
+{% extends "base/base.html" %}
+
+{% block titre %}{{ action }} un partenaire — ComptApp{% endblock %}
+{% block titre_page %}{{ action }} un partenaire{% endblock %}
+
+{% block contenu %}
+
+<div class="page-header">
+    <div>
+        <h1 class="page-header__titre">{{ action }} un partenaire</h1>
+        <p class="page-header__sous-titre">Renseignez les informations du client ou du fournisseur.</p>
+    </div>
+    <a href="{% url 'partners:liste_partenaires' %}" class="btn btn--ghost">← Retour à la liste</a>
+</div>
+
+<div class="carte" style="max-width:720px;">
+    <form method="post" novalidate>
+        {% csrf_token %}
+
+        <div class="form-grid">
+            <div class="form-groupe">
+                <label for="{{ form.type.id_for_label }}">Type de partenaire</label>
+                {{ form.type }}
+                {% if form.type.errors %}<div class="form-erreur">{{ form.type.errors.0 }}</div>{% endif %}
+            </div>
+            <div class="form-groupe">
+                <label for="{{ form.nom.id_for_label }}">Nom / Raison sociale</label>
+                {{ form.nom }}
+                {% if form.nom.errors %}<div class="form-erreur">{{ form.nom.errors.0 }}</div>{% endif %}
+            </div>
+            <div class="form-groupe">
+                <label for="{{ form.telephone.id_for_label }}">Téléphone</label>
+                {{ form.telephone }}
+                {% if form.telephone.errors %}<div class="form-erreur">{{ form.telephone.errors.0 }}</div>{% endif %}
+            </div>
+            <div class="form-groupe">
+                <label for="{{ form.email.id_for_label }}">Email</label>
+                {{ form.email }}
+                {% if form.email.errors %}<div class="form-erreur">{{ form.email.errors.0 }}</div>{% endif %}
+            </div>
+            <div class="form-groupe pleine-largeur">
+                <label for="{{ form.adresse.id_for_label }}">Adresse</label>
+                {{ form.adresse }}
+                {% if form.adresse.errors %}<div class="form-erreur">{{ form.adresse.errors.0 }}</div>{% endif %}
+            </div>
+        </div>
+
+        <div style="display:flex; gap:12px; margin-top:10px;">
+            <button type="submit" class="btn btn--primaire">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                Enregistrer
+            </button>
+            <a href="{% url 'partners:liste_partenaires' %}" class="btn btn--ghost">Annuler</a>
+        </div>
+    </form>
+</div>
+
+{% endblock %}

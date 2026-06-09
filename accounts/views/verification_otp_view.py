@@ -18,7 +18,7 @@ Utilisateur = get_user_model()
 class VerificationOtpView(View):
     """Étape 2 de la 2FA : saisie du code OTP."""
 
-    template_name = "accounts/verification_otp.html"
+    template_name = "accounts/auth/verification_otp.html"
 
     def _get_utilisateur(self, request):
         user_id = request.session.get("otp_user_id")

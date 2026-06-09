@@ -14,9 +14,33 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+
+
+"""
+Routeur principal de ComptApp Platform.
+Rattache (via include) les fichiers urls.py de chaque application.
+"""
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+
+    # Accueil, tableau de bord
+    path('', include('core.urls')),
+
+    # Authentification et 2FA
+    path('comptes/', include('accounts.urls')),
+
+    # Clients et fournisseurs
+    path('partenaires/', include('partners.urls')),
+
+    # Recettes
+    path('recettes/', include('revenues.urls')),
+
+    # Dépenses
+    path('depenses/', include('expenses.urls')),
+
+    # Rapports comptables
+    path('rapports/', include('reports.urls')),
 ]

@@ -11,7 +11,8 @@ from revenues.models import Recette
 
 @method_decorator(login_required, name="dispatch")
 class ModificationRecetteView(View):
-    template_name = "revenues/form_recette.html"
+    
+    template_name = "revenues/crud/form_recette.html"
 
     def get(self, request, pk):
         recette = get_object_or_404(Recette, pk=pk)

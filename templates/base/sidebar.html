@@ -1,0 +1,83 @@
+{% load static %}
+<aside class="sidebar" id="sidebar">
+
+    <a href="{% url 'core:tableau_de_bord' %}" class="sidebar__logo">
+        <span class="logo-mark">
+            <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle class="coin" cx="24" cy="24" r="22" fill="#dcfaf8" stroke="#277f65" stroke-width="2"/>
+                <rect class="bar bar-1" x="14" y="24" width="4.5" height="10" rx="2" fill="#277f65"/>
+                <rect class="bar bar-2" x="21.5" y="18" width="4.5" height="16" rx="2" fill="#1814f3"/>
+                <rect class="bar bar-3" x="29" y="21" width="4.5" height="13" rx="2" fill="#fc7900"/>
+            </svg>
+        </span>
+        <span class="sidebar__logo-text">Compt<span>App</span></span>
+    </a>
+
+    <nav class="sidebar__nav">
+        <div class="sidebar__section-title">Général</div>
+
+        <a href="{% url 'core:tableau_de_bord' %}"
+           class="nav-item {% if request.resolver_match.namespace == 'core' %}actif{% endif %}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
+            Tableau de bord
+        </a>
+
+        <div class="sidebar__section-title">Opérations</div>
+
+        <a href="{% url 'revenues:liste_recettes' %}"
+           class="nav-item {% if request.resolver_match.namespace == 'revenues' %}actif{% endif %}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg>
+            Recettes
+        </a>
+
+        <a href="{% url 'expenses:liste_depenses' %}"
+           class="nav-item {% if request.resolver_match.namespace == 'expenses' %}actif{% endif %}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg>
+            Dépenses
+        </a>
+
+        <a href="{% url 'partners:liste_partenaires' %}"
+           class="nav-item {% if request.resolver_match.namespace == 'partners' %}actif{% endif %}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            Clients &amp; Fournisseurs
+        </a>
+
+        <div class="sidebar__section-title">Comptabilité</div>
+
+        <a href="{% url 'reports:journal' %}"
+           class="nav-item {% if request.resolver_match.namespace == 'reports' %}actif{% endif %}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+            Rapports
+        </a>
+
+        {% if user.is_authenticated and user.est_admin %}
+        <div class="sidebar__section-title">Administration</div>
+        <a href="{% url 'core:sauvegarde' %}"
+           class="nav-item {% if request.resolver_match.url_name == 'sauvegarde' %}actif{% endif %}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v14a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            Sauvegarde
+        </a>
+        {% endif %}
+    </nav>
+
+    {% if user.is_authenticated %}
+    <div style="padding: 18px 26px 0; border-top: 1px solid var(--gris-200); margin-top: 10px;">
+        <div style="display:flex; align-items:center; gap:12px;">
+            <div class="navbar__avatar" style="width:40px; height:40px; font-size:0.85rem;">
+                {{ user.prenom.0 }}{{ user.nom.0 }}
+            </div>
+            <div style="min-width:0;">
+                <div style="font-weight:700; font-size:0.85rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ user.prenom }} {{ user.nom }}</div>
+                <div style="font-size:0.72rem; color:var(--bleu-clair);">{{ user.get_role_display }}</div>
+            </div>
+        </div>
+        <form method="post" action="{% url 'accounts:deconnexion' %}" style="margin-top:14px;">
+            {% csrf_token %}
+            <button type="submit" class="btn btn--ghost btn--sm" style="width:100%; justify-content:center;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                Déconnexion
+            </button>
+        </form>
+    </div>
+    {% endif %}
+</aside>

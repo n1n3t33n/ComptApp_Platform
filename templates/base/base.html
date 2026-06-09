@@ -1,0 +1,53 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block titre %}ComptApp Platform{% endblock %}</title>
+    <meta name="description" content="ComptApp Platform — la plateforme ivoirienne de comptabilité simple pour petites entreprises.">
+    <link rel="stylesheet" href="{% static 'css/comptapp.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+<div class="app">
+
+    {% include "base/sidebar.html" %}
+
+    <div class="overlay" id="overlay"></div>
+
+    <div class="main">
+        {% include "base/navbar.html" %}
+
+        <main class="contenu">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="flash flash--{{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            {% block contenu %}{% endblock %}
+        </main>
+
+        {% include "base/footer.html" %}
+    </div>
+</div>
+
+<script>
+    (function () {
+        const burger = document.getElementById('burger');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+        function toggle() {
+            sidebar.classList.toggle('ouvert');
+            overlay.classList.toggle('actif');
+        }
+        if (burger) burger.addEventListener('click', toggle);
+        if (overlay) overlay.addEventListener('click', toggle);
+    })();
+</script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

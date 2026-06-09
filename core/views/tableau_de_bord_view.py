@@ -50,4 +50,4 @@ def tableau_de_bord_view(request):
         "dernieres_depenses": dernieres_depenses,
         "mois_courant": aujourd_hui.strftime("%B %Y"),
     }
-    return render(request, "core/tableau_de_bord.html", context)
+    return render(request, "core/dashboard/tableau_de_bord.html", context)

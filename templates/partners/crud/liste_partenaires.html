@@ -1,0 +1,85 @@
+{% extends "base/base.html" %}
+
+{% block titre %}Clients &amp; Fournisseurs — ComptApp{% endblock %}
+{% block titre_page %}Clients &amp; Fournisseurs{% endblock %}
+
+{% block contenu %}
+
+<div class="page-header">
+    <div>
+        <h1 class="page-header__titre">Clients &amp; Fournisseurs</h1>
+        <p class="page-header__sous-titre">Gérez les partenaires de votre entreprise.</p>
+    </div>
+    <a href="{% url 'partners:ajout_partenaire' %}" class="btn btn--primaire">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Ajouter un partenaire
+    </a>
+</div>
+
+<div class="carte" style="margin-bottom:24px;">
+    <form method="get" class="filtres">
+        <div class="form-groupe" style="flex:2; min-width:200px;">
+            <label>Recherche par nom</label>
+            <input type="text" name="q" value="{{ recherche }}" placeholder="Nom du partenaire...">
+        </div>
+        <div class="form-groupe" style="flex:1; min-width:160px;">
+            <label>Type</label>
+            <select name="type">
+                <option value="">Tous</option>
+                <option value="CLIENT" {% if type_filtre == 'CLIENT' %}selected{% endif %}>Clients</option>
+                <option value="FOURNISSEUR" {% if type_filtre == 'FOURNISSEUR' %}selected{% endif %}>Fournisseurs</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn--primaire">Filtrer</button>
+        <a href="{% url 'partners:liste_partenaires' %}" class="btn btn--ghost">Réinitialiser</a>
+    </form>
+</div>
+
+<div class="carte">
+    {% if partenaires %}
+    <div class="table-wrap">
+        <table class="data">
+            <thead>
+                <tr>
+                    <th>Nom / Raison sociale</th>
+                    <th>Type</th>
+                    <th>Téléphone</th>
+                    <th>Email</th>
+                    <th style="text-align:right;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in partenaires %}
+                <tr>
+                    <td style="font-weight:600;">{{ p.nom }}</td>
+                    <td>
+                        {% if p.type == 'CLIENT' %}
+                            <span class="badge badge--client">Client</span>
+                        {% else %}
+                            <span class="badge badge--fournisseur">Fournisseur</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ p.telephone|default:"—" }}</td>
+                    <td>{{ p.email|default:"—" }}</td>
+                    <td style="text-align:right; white-space:nowrap;">
+                        <a href="{% url 'partners:modification_partenaire' p.pk %}" class="btn btn--ghost btn--sm" title="Modifier">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4Z"/></svg>
+                        </a>
+                        <a href="{% url 'partners:suppression_partenaire' p.pk %}" class="btn btn--danger btn--sm" title="Supprimer">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="vide">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <p>Aucun partenaire trouvé. Commencez par en ajouter un.</p>
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}

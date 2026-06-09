@@ -1,0 +1,64 @@
+{% extends "base/base.html" %}
+
+{% block titre %}Bilan simplifié — ComptApp{% endblock %}
+{% block titre_page %}Bilan simplifié{% endblock %}
+
+{% block contenu %}
+<div class="page-header">
+    <div>
+        <h1 class="page-header__titre">Bilan simplifié</h1>
+        <p class="page-header__sous-titre">Synthèse des recettes, dépenses et résultat.</p>
+    </div>
+    <a href="{% url 'reports:export_pdf' 'bilan' %}?date_debut={{ date_debut }}&date_fin={{ date_fin }}" class="btn btn--primaire">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        Exporter en PDF
+    </a>
+</div>
+
+{% include "reports/_filtres_periode.html" with action_url='reports:bilan' %}
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-card__icon stat-card__icon--recette">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg>
+        </div>
+        <div>
+            <div class="stat-card__label">Total des recettes</div>
+            <div class="stat-card__valeur positif">{{ bilan.total_recettes|floatformat:0 }} <small style="font-size:0.9rem;">FCFA</small></div>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-card__icon stat-card__icon--depense">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg>
+        </div>
+        <div>
+            <div class="stat-card__label">Total des dépenses</div>
+            <div class="stat-card__valeur" style="color:var(--orange);">{{ bilan.total_depenses|floatformat:0 }} <small style="font-size:0.9rem;">FCFA</small></div>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-card__icon stat-card__icon--solde">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        </div>
+        <div>
+            <div class="stat-card__label">Résultat ({{ bilan.resultat }})</div>
+            <div class="stat-card__valeur {% if bilan.solde >= 0 %}positif{% else %}negatif{% endif %}">{{ bilan.solde|floatformat:0 }} <small style="font-size:0.9rem;">FCFA</small></div>
+        </div>
+    </div>
+</div>
+
+<div class="carte" style="margin-top:8px;">
+    <h2 class="carte__titre">Interprétation</h2>
+    <p style="color:var(--bleu-clair); line-height:1.7;">
+        Sur la période sélectionnée, votre entreprise a généré
+        <strong style="color:var(--teal-fonce);">{{ bilan.total_recettes|floatformat:0 }} FCFA</strong> de recettes
+        pour <strong style="color:var(--orange);">{{ bilan.total_depenses|floatformat:0 }} FCFA</strong> de dépenses,
+        soit un résultat
+        {% if bilan.solde >= 0 %}
+            <strong style="color:var(--teal-fonce);">bénéficiaire de {{ bilan.solde|floatformat:0 }} FCFA</strong>.
+        {% else %}
+            <strong style="color:var(--rouge);">déficitaire de {{ bilan.solde|floatformat:0 }} FCFA</strong>.
+        {% endif %}
+    </p>
+</div>
+{% endblock %}

@@ -11,7 +11,7 @@ from partners.models import Partenaire
 
 @method_decorator(login_required, name="dispatch")
 class ModificationPartenaireView(View):
-    template_name = "partners/form_partenaire.html"
+    template_name = "partners/crud/form_partenaire.html"
 
     def get(self, request, pk):
         partenaire = get_object_or_404(Partenaire, pk=pk)

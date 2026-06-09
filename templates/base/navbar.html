@@ -1,0 +1,25 @@
+<header class="navbar">
+    <div style="display:flex; align-items:center; gap:16px;">
+        <span class="burger" id="burger">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </span>
+        <h1 class="navbar__titre">{% block titre_page %}Tableau de bord{% endblock %}</h1>
+    </div>
+
+    <div class="navbar__right">
+        <div class="navbar__search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            <input type="text" placeholder="Rechercher..." id="recherche-globale">
+        </div>
+
+        <div class="navbar__icon-btn" title="Notifications">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+        </div>
+
+        {% if user.is_authenticated %}
+        <div class="navbar__avatar" title="{{ user.prenom }} {{ user.nom }}">
+            {{ user.prenom.0 }}{{ user.nom.0 }}
+        </div>
+        {% endif %}
+    </div>
+</header>

@@ -9,7 +9,8 @@ from reports.services import construire_etats
 
 @method_decorator(login_required, name="dispatch")
 class EtatsView(View):
-    template_name = "reports/etats.html"
+    
+    template_name = "reports/ecran/etats.html"
 
     def get(self, request):
         date_debut = request.GET.get("date_debut", "")

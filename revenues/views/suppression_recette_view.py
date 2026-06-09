@@ -10,7 +10,8 @@ from revenues.models import Recette
 
 @method_decorator(login_required, name="dispatch")
 class SuppressionRecetteView(View):
-    template_name = "revenues/confirmation_suppression.html"
+    
+    template_name = "revenues/crud/confirmation_suppression.html"
 
     def get(self, request, pk):
         recette = get_object_or_404(Recette, pk=pk)

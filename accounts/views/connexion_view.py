@@ -17,7 +17,7 @@ from accounts.services import generer_et_envoyer_otp
 class ConnexionView(View):
     """Étape 1 de la 2FA : saisie des identifiants."""
 
-    template_name = "accounts/connexion.html"
+    template_name = "accounts/auth/connexion.html"
 
     def get(self, request):
         if request.user.is_authenticated:

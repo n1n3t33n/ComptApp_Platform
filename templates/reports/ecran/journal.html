@@ -1,0 +1,52 @@
+{% extends "base/base.html" %}
+
+{% block titre %}Journal des opérations — ComptApp{% endblock %}
+{% block titre_page %}Journal des opérations{% endblock %}
+
+{% block contenu %}
+<div class="page-header">
+    <div>
+        <h1 class="page-header__titre">Journal des opérations</h1>
+        <p class="page-header__sous-titre">Liste chronologique de toutes les recettes et dépenses.</p>
+    </div>
+    <a href="{% url 'reports:export_pdf' 'journal' %}?date_debut={{ date_debut }}&date_fin={{ date_fin }}" class="btn btn--primaire">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+        Exporter en PDF
+    </a>
+</div>
+
+{% include "reports/_filtres_periode.html" with action_url='reports:journal' %}
+
+<div class="carte">
+    {% if lignes %}
+    <div class="table-wrap">
+        <table class="data">
+            <thead>
+                <tr><th>Date</th><th>Sens</th><th>Description</th><th>Catégorie</th><th>Partenaire</th><th style="text-align:right;">Recette</th><th style="text-align:right;">Dépense</th></tr>
+            </thead>
+            <tbody>
+                {% for l in lignes %}
+                <tr>
+                    <td>{{ l.date|date:"d/m/Y" }}</td>
+                    <td>
+                        {% if l.sens == 'Recette' %}<span class="badge badge--recette">Recette</span>
+                        {% else %}<span class="badge badge--depense">Dépense</span>{% endif %}
+                    </td>
+                    <td style="font-weight:600;">{{ l.description|truncatechars:30 }}</td>
+                    <td>{{ l.categorie }}</td>
+                    <td>{{ l.partenaire }}</td>
+                    <td style="text-align:right;" class="montant montant--recette">{% if l.recette %}+{{ l.recette|floatformat:0 }}{% else %}—{% endif %}</td>
+                    <td style="text-align:right;" class="montant montant--depense">{% if l.depense %}-{{ l.depense|floatformat:0 }}{% else %}—{% endif %}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="vide">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        <p>Aucune opération sur cette période.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

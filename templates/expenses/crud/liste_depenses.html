@@ -1,0 +1,93 @@
+{% extends "base/base.html" %}
+
+{% block titre %}Dépenses — ComptApp{% endblock %}
+{% block titre_page %}Dépenses{% endblock %}
+
+{% block contenu %}
+<div class="page-header">
+    <div>
+        <h1 class="page-header__titre">Dépenses</h1>
+        <p class="page-header__sous-titre">Toutes les sorties d'argent de votre entreprise.</p>
+    </div>
+    <a href="{% url 'expenses:ajout_depense' %}" class="btn btn--primaire" style="background:var(--orange); box-shadow:0 8px 20px rgba(252,121,0,0.25);">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Nouvelle dépense
+    </a>
+</div>
+
+<div class="carte" style="margin-bottom:24px;">
+    <form method="get" class="filtres">
+        <div class="form-groupe" style="flex:2; min-width:180px;">
+            <label>Recherche</label>
+            <input type="text" name="q" value="{{ recherche }}" placeholder="Description...">
+        </div>
+        <div class="form-groupe" style="min-width:160px;">
+            <label>Catégorie</label>
+            <select name="categorie">
+                <option value="">Toutes</option>
+                {% for cat in categories %}
+                <option value="{{ cat.pk }}" {% if categorie_id == cat.pk|stringformat:"s" %}selected{% endif %}>{{ cat.libelle }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-groupe" style="min-width:150px;">
+            <label>Du</label>
+            <input type="date" name="date_debut" value="{{ date_debut }}">
+        </div>
+        <div class="form-groupe" style="min-width:150px;">
+            <label>Au</label>
+            <input type="date" name="date_fin" value="{{ date_fin }}">
+        </div>
+        <button type="submit" class="btn btn--primaire" style="background:var(--orange);">Filtrer</button>
+        <a href="{% url 'expenses:liste_depenses' %}" class="btn btn--ghost">Réinitialiser</a>
+    </form>
+</div>
+
+<div class="stats-grid" style="grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); margin-bottom:24px;">
+    <div class="stat-card">
+        <div class="stat-card__icon stat-card__icon--depense">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg>
+        </div>
+        <div>
+            <div class="stat-card__label">Total filtré</div>
+            <div class="stat-card__valeur" style="color:var(--orange);">{{ total|floatformat:0 }} <small style="font-size:0.9rem;">FCFA</small></div>
+        </div>
+    </div>
+</div>
+
+<div class="carte">
+    {% if depenses %}
+    <div class="table-wrap">
+        <table class="data">
+            <thead>
+                <tr><th>Date</th><th>Description</th><th>Catégorie</th><th>Fournisseur</th><th style="text-align:right;">Montant</th><th style="text-align:right;">Actions</th></tr>
+            </thead>
+            <tbody>
+                {% for d in depenses %}
+                <tr>
+                    <td>{{ d.date|date:"d/m/Y" }}</td>
+                    <td style="font-weight:600;">{{ d.description|truncatechars:32 }}</td>
+                    <td><span class="badge badge--depense">{{ d.categorie.libelle }}</span></td>
+                    <td>{{ d.partenaire.nom|default:"—" }}</td>
+                    <td style="text-align:right;" class="montant montant--depense">-{{ d.montant|floatformat:0 }}</td>
+                    <td style="text-align:right; white-space:nowrap;">
+                        <a href="{% url 'expenses:modification_depense' d.pk %}" class="btn btn--ghost btn--sm">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4Z"/></svg>
+                        </a>
+                        <a href="{% url 'expenses:suppression_depense' d.pk %}" class="btn btn--danger btn--sm">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="vide">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg>
+        <p>Aucune dépense trouvée. Enregistrez votre première dépense.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

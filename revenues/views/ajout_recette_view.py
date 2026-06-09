@@ -10,7 +10,8 @@ from revenues.forms import RecetteForm
 
 @method_decorator(login_required, name="dispatch")
 class AjoutRecetteView(View):
-    template_name = "revenues/form_recette.html"
+    
+    template_name = "revenues/crud/form_recette.html"
 
     def get(self, request):
         return render(

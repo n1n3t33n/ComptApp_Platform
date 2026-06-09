@@ -10,7 +10,8 @@ from partners.forms import PartenaireForm
 
 @method_decorator(login_required, name="dispatch")
 class AjoutPartenaireView(View):
-    template_name = "partners/form_partenaire.html"
+    
+    template_name = "partners/crud/form_partenaire.html"
 
     def get(self, request):
         return render(

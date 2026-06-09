@@ -1,0 +1,129 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block titre %}Tableau de bord — ComptApp{% endblock %}
+{% block titre_page %}Tableau de bord{% endblock %}
+
+{% block contenu %}
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-card__icon stat-card__icon--recette">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg>
+        </div>
+        <div>
+            <div class="stat-card__label">Recettes du mois</div>
+            <div class="stat-card__valeur positif">{{ recettes_mois|floatformat:0 }} <small style="font-size:0.9rem;">FCFA</small></div>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-card__icon stat-card__icon--depense">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg>
+        </div>
+        <div>
+            <div class="stat-card__label">Dépenses du mois</div>
+            <div class="stat-card__valeur" style="color:var(--orange);">{{ depenses_mois|floatformat:0 }} <small style="font-size:0.9rem;">FCFA</small></div>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-card__icon stat-card__icon--solde">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        </div>
+        <div>
+            <div class="stat-card__label">Solde net du mois</div>
+            <div class="stat-card__valeur {% if solde_net >= 0 %}positif{% else %}negatif{% endif %}">
+                {{ solde_net|floatformat:0 }} <small style="font-size:0.9rem;">FCFA</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-card__icon stat-card__icon--neutre">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        </div>
+        <div>
+            <div class="stat-card__label">Période</div>
+            <div class="stat-card__valeur" style="font-size:1.15rem; text-transform:capitalize;">{{ mois_courant }}</div>
+        </div>
+    </div>
+</div>
+
+<div class="carte anim-slide" style="margin-bottom:28px;">
+    <h2 class="carte__titre">Actions rapides</h2>
+    <div style="display:flex; gap:14px; flex-wrap:wrap;">
+        <a href="{% url 'revenues:ajout_recette' %}" class="btn btn--succes">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Nouvelle recette
+        </a>
+        <a href="{% url 'expenses:ajout_depense' %}" class="btn btn--primaire" style="background:var(--orange); box-shadow:0 8px 20px rgba(252,121,0,0.25);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Nouvelle dépense
+        </a>
+        <a href="{% url 'partners:ajout_partenaire' %}" class="btn btn--ghost">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+            Nouveau partenaire
+        </a>
+        <a href="{% url 'reports:bilan' %}" class="btn btn--ghost">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+            Voir le bilan
+        </a>
+    </div>
+</div>
+
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:24px;" class="dashboard-listes">
+    <div class="carte carte--hover">
+        <h2 class="carte__titre">Dernières recettes</h2>
+        {% if dernieres_recettes %}
+        <div class="table-wrap">
+            <table class="data">
+                <thead><tr><th>Date</th><th>Description</th><th>Catégorie</th><th style="text-align:right;">Montant</th></tr></thead>
+                <tbody>
+                    {% for r in dernieres_recettes %}
+                    <tr>
+                        <td>{{ r.date|date:"d/m/Y" }}</td>
+                        <td>{{ r.description|truncatechars:28 }}</td>
+                        <td><span class="badge badge--recette">{{ r.categorie.libelle }}</span></td>
+                        <td style="text-align:right;" class="montant montant--recette">+{{ r.montant|floatformat:0 }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p style="color:var(--bleu-clair); text-align:center; padding:30px 0;">Aucune recette enregistrée pour le moment.</p>
+        {% endif %}
+    </div>
+
+    <div class="carte carte--hover">
+        <h2 class="carte__titre">Dernières dépenses</h2>
+        {% if dernieres_depenses %}
+        <div class="table-wrap">
+            <table class="data">
+                <thead><tr><th>Date</th><th>Description</th><th>Catégorie</th><th style="text-align:right;">Montant</th></tr></thead>
+                <tbody>
+                    {% for d in dernieres_depenses %}
+                    <tr>
+                        <td>{{ d.date|date:"d/m/Y" }}</td>
+                        <td>{{ d.description|truncatechars:28 }}</td>
+                        <td><span class="badge badge--depense">{{ d.categorie.libelle }}</span></td>
+                        <td style="text-align:right;" class="montant montant--depense">-{{ d.montant|floatformat:0 }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p style="color:var(--bleu-clair); text-align:center; padding:30px 0;">Aucune dépense enregistrée pour le moment.</p>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_css %}
+<style>
+@media (max-width: 900px) { .dashboard-listes { grid-template-columns: 1fr !important; } }
+</style>
+{% endblock %}

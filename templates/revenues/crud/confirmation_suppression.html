@@ -1,0 +1,17 @@
+{% extends "base/base.html" %}
+{% block titre %}Supprimer une recette — ComptApp{% endblock %}
+{% block titre_page %}Confirmer la suppression{% endblock %}
+{% block contenu %}
+<div class="carte" style="max-width:520px; margin:0 auto; text-align:center; padding:40px;">
+    <div style="width:70px; height:70px; border-radius:50%; background:#ffe2e6; display:grid; place-items:center; margin:0 auto 20px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fe5c73" stroke-width="2" width="32" height="32"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    </div>
+    <h2 style="margin-bottom:10px;">Supprimer cette recette ?</h2>
+    <p style="font-weight:700; font-size:1.05rem; margin:14px 0 28px;">{{ objet }}</p>
+    <form method="post" style="display:flex; gap:12px; justify-content:center;">
+        {% csrf_token %}
+        <button type="submit" class="btn btn--danger">Oui, supprimer</button>
+        <a href="{% url 'revenues:liste_recettes' %}" class="btn btn--ghost">Annuler</a>
+    </form>
+</div>
+{% endblock %}

@@ -10,7 +10,8 @@ from expenses.models import Depense
 
 @method_decorator(login_required, name="dispatch")
 class SuppressionDepenseView(View):
-    template_name = "expenses/confirmation_suppression.html"
+    
+    template_name = "expenses/crud/confirmation_suppression.html"
 
     def get(self, request, pk):
         depense = get_object_or_404(Depense, pk=pk)

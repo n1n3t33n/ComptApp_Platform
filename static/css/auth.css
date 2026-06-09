@@ -1,0 +1,55 @@
+/* ============================================================
+   ComptApp — Pages d'authentification (plein écran, split)
+   ============================================================ */
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
+.auth-page { min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr; font-family: 'Plus Jakarta Sans', sans-serif; }
+
+.auth-visuel { background: linear-gradient(150deg, #343c6a 0%, #1814f3 100%); position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: center; padding: 60px; color: white; }
+.auth-visuel::before, .auth-visuel::after { content: ''; position: absolute; border-radius: 50%; opacity: 0.25; }
+.auth-visuel::before { width: 380px; height: 380px; background: radial-gradient(circle, #16dbcc, transparent 70%); top: -100px; right: -100px; animation: flotte 8s ease-in-out infinite; }
+.auth-visuel::after { width: 300px; height: 300px; background: radial-gradient(circle, #fa00ff, transparent 70%); bottom: -80px; left: -60px; animation: flotte 10s ease-in-out infinite reverse; }
+@keyframes flotte { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(20px, -25px); } }
+
+.auth-marque { display: flex; align-items: center; gap: 14px; margin-bottom: 40px; position: relative; z-index: 2; }
+.auth-marque .logo-mark { width: 46px; height: 46px; }
+.auth-marque .logo-mark svg { width: 100%; height: 100%; }
+.auth-marque .logo-mark .coin { transform-origin: center; animation: tourne 6s ease-in-out infinite; }
+@keyframes tourne { 0%, 70%, 100% { transform: rotateY(0); } 85% { transform: rotateY(360deg); } }
+.auth-marque__nom { font-family: 'Sora', sans-serif; font-weight: 800; font-size: 1.6rem; }
+.auth-marque__nom span { color: #16dbcc; }
+
+.auth-visuel__titre { font-family: 'Sora', sans-serif; font-size: 2.6rem; font-weight: 800; line-height: 1.15; margin-bottom: 20px; position: relative; z-index: 2; animation: slideUp 0.7s ease; }
+.auth-visuel__texte { font-size: 1.05rem; opacity: 0.85; max-width: 420px; position: relative; z-index: 2; animation: slideUp 0.7s ease 0.15s backwards; }
+.auth-visuel__points { margin-top: 40px; position: relative; z-index: 2; }
+.auth-visuel__point { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; opacity: 0.9; animation: slideUp 0.6s ease backwards; }
+.auth-visuel__point:nth-child(1){ animation-delay: 0.25s; }
+.auth-visuel__point:nth-child(2){ animation-delay: 0.35s; }
+.auth-visuel__point:nth-child(3){ animation-delay: 0.45s; }
+.auth-visuel__point svg { width: 22px; height: 22px; flex-shrink: 0; color: #16dbcc; }
+
+.auth-form-wrap { display: flex; align-items: center; justify-content: center; padding: 40px; background: #f5f7fa; }
+.auth-card { width: 100%; max-width: 420px; background: white; border-radius: 25px; box-shadow: 0 10px 50px rgba(52, 60, 106, 0.1); padding: 44px 40px; animation: slideUp 0.6s ease; }
+.auth-card__titre { font-family: 'Sora', sans-serif; font-size: 1.7rem; font-weight: 700; color: #343c6a; margin-bottom: 8px; }
+.auth-card__sous-titre { color: #718ebf; font-size: 0.92rem; margin-bottom: 30px; }
+
+.auth-form .form-groupe { margin-bottom: 20px; }
+.auth-form label { display: block; font-size: 0.85rem; font-weight: 600; color: #718ebf; margin-bottom: 8px; }
+.auth-form input { width: 100%; padding: 14px 18px; border: 1px solid #dfeaf2; border-radius: 15px; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.95rem; color: #343c6a; outline: none; transition: 0.25s; }
+.auth-form input:focus { border-color: #1814f3; box-shadow: 0 0 0 3px rgba(24,20,243,0.1); }
+
+.auth-btn { width: 100%; padding: 15px; background: #1814f3; color: white; border: none; border-radius: 999px; font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700; font-size: 1rem; cursor: pointer; margin-top: 8px; transition: 0.25s; box-shadow: 0 8px 24px rgba(24, 20, 243, 0.3); }
+.auth-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(24, 20, 243, 0.4); }
+
+.auth-erreur { background: #ffe2e6; color: #fe5c73; padding: 12px 16px; border-radius: 12px; font-size: 0.86rem; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+
+.otp-input { text-align: center; font-family: 'Sora', sans-serif !important; font-size: 2rem !important; letter-spacing: 0.6em; font-weight: 700; padding-left: 0.6em !important; }
+.otp-info { background: #e7edff; color: #1814f3; padding: 14px 18px; border-radius: 14px; font-size: 0.85rem; margin-bottom: 24px; display: flex; gap: 10px; align-items: flex-start; }
+.otp-info svg { width: 20px; height: 20px; flex-shrink: 0; margin-top: 1px; }
+
+@keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+@media (max-width: 900px) {
+  .auth-page { grid-template-columns: 1fr; }
+  .auth-visuel { display: none; }
+}

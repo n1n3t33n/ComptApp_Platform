@@ -9,7 +9,8 @@ from reports.services import construire_bilan
 
 @method_decorator(login_required, name="dispatch")
 class BilanView(View):
-    template_name = "reports/bilan.html"
+    
+    template_name = "reports/ecran/bilan.html"
 
     def get(self, request):
         date_debut = request.GET.get("date_debut", "")

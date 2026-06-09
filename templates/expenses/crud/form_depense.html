@@ -1,0 +1,51 @@
+{% extends "base/base.html" %}
+
+{% block titre %}{{ action }} une dépense — ComptApp{% endblock %}
+{% block titre_page %}{{ action }} une dépense{% endblock %}
+
+{% block contenu %}
+<div class="page-header">
+    <div>
+        <h1 class="page-header__titre">{{ action }} une dépense</h1>
+        <p class="page-header__sous-titre">Enregistrez une sortie d'argent.</p>
+    </div>
+    <a href="{% url 'expenses:liste_depenses' %}" class="btn btn--ghost">← Retour</a>
+</div>
+
+<div class="carte" style="max-width:720px;">
+    <form method="post" novalidate>
+        {% csrf_token %}
+        <div class="form-grid">
+            <div class="form-groupe">
+                <label for="{{ form.date.id_for_label }}">Date</label>
+                {{ form.date }}
+                {% if form.date.errors %}<div class="form-erreur">{{ form.date.errors.0 }}</div>{% endif %}
+            </div>
+            <div class="form-groupe">
+                <label for="{{ form.montant.id_for_label }}">Montant (FCFA)</label>
+                {{ form.montant }}
+                {% if form.montant.errors %}<div class="form-erreur">{{ form.montant.errors.0 }}</div>{% endif %}
+            </div>
+            <div class="form-groupe">
+                <label for="{{ form.categorie.id_for_label }}">Catégorie</label>
+                {{ form.categorie }}
+                {% if form.categorie.errors %}<div class="form-erreur">{{ form.categorie.errors.0 }}</div>{% endif %}
+            </div>
+            <div class="form-groupe">
+                <label for="{{ form.partenaire.id_for_label }}">Fournisseur (optionnel)</label>
+                {{ form.partenaire }}
+                {% if form.partenaire.errors %}<div class="form-erreur">{{ form.partenaire.errors.0 }}</div>{% endif %}
+            </div>
+            <div class="form-groupe pleine-largeur">
+                <label for="{{ form.description.id_for_label }}">Description</label>
+                {{ form.description }}
+                {% if form.description.errors %}<div class="form-erreur">{{ form.description.errors.0 }}</div>{% endif %}
+            </div>
+        </div>
+        <div style="display:flex; gap:12px; margin-top:10px;">
+            <button type="submit" class="btn btn--primaire" style="background:var(--orange);">Enregistrer</button>
+            <a href="{% url 'expenses:liste_depenses' %}" class="btn btn--ghost">Annuler</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

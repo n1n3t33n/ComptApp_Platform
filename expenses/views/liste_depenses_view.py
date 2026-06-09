@@ -5,31 +5,34 @@ from django.shortcuts import render
 from django.utils.decorators import method_decorator
 from django.views import View
 
+from core.models import CategorieOperation
 from expenses.models import Depense
 
 
 @method_decorator(login_required, name="dispatch")
 class ListeDepensesView(View):
-    template_name = "expenses/liste_depenses.html"
+
+    template_name = "expenses/crud/liste_depenses.html"
 
     def get(self, request):
         qs = Depense.objects.select_related("categorie", "partenaire", "saisi_par")
 
         recherche = request.GET.get("q", "")
-        categorie = request.GET.get("categorie", "")
+        categorie_id = request.GET.get("categorie", "")
         date_debut = request.GET.get("date_debut", "")
         date_fin = request.GET.get("date_fin", "")
 
         if recherche:
             qs = qs.filter(description__icontains=recherche)
-        if categorie:
-            qs = qs.filter(categorie_id=categorie)
+        if categorie_id:
+            qs = qs.filter(categorie_id=categorie_id)
         if date_debut:
             qs = qs.filter(date__gte=date_debut)
         if date_fin:
             qs = qs.filter(date__lte=date_fin)
 
         total = qs.aggregate(total=Sum("montant"))["total"] or 0
+        categories = CategorieOperation.objects.filter(sens=CategorieOperation.Sens.DEPENSE)
 
         return render(
             request,
@@ -38,7 +41,9 @@ class ListeDepensesView(View):
                 "depenses": qs,
                 "total": total,
                 "recherche": recherche,
+                "categorie_id": categorie_id,
                 "date_debut": date_debut,
                 "date_fin": date_fin,
+                "categories": categories,
             },
         )
