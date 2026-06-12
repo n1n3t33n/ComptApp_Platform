@@ -21,9 +21,22 @@ class Partenaire(models.Model):
         verbose_name="Type",
     )
     nom = models.CharField(max_length=150, verbose_name="Nom ou raison sociale")
+    activite = models.CharField(
+        max_length=120,
+        blank=True,
+        verbose_name="Secteur d'activité",
+        help_text="Ex. : Commerce de détail, BTP, Restauration, Transport…",
+    )
+    contact = models.CharField(
+        max_length=150,
+        blank=True,
+        verbose_name="Personne à contacter",
+    )
     telephone = models.CharField(max_length=20, blank=True, verbose_name="Téléphone")
-    adresse = models.TextField(blank=True, verbose_name="Adresse")
     email = models.EmailField(blank=True, verbose_name="Email")
+    ville = models.CharField(max_length=100, blank=True, verbose_name="Ville")
+    adresse = models.TextField(blank=True, verbose_name="Adresse")
+    notes = models.TextField(blank=True, verbose_name="Notes internes")
     date_creation = models.DateTimeField(auto_now_add=True)
 
     class Meta:

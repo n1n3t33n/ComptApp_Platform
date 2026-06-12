@@ -219,4 +219,67 @@ textarea { resize: vertical; min-height: 90px; }
 @media (max-width: 560px) {
   .page-header { flex-direction: column; align-items: flex-start; }
   .stats-grid { grid-template-columns: 1fr; }
+  /* Cartes de stats plus compactes sur petit écran */
+  .stat-card { padding: 18px 18px; gap: 14px; }
+  .stat-card__icon { width: 50px; height: 50px; }
+  .stat-card__valeur { font-size: 1.3rem; }
+  /* Actions rapides : boutons pleine largeur, plus faciles à toucher */
+  .carte > div[style*="flex-wrap"] .btn { flex: 1 1 100%; justify-content: center; }
+  /* Graphiques un peu plus courts pour éviter les canvas trop hauts */
+  .graphique-conteneur { height: 260px; }
+  .graphique-conteneur--anneau { height: 240px; }
+  .graphique-conteneur--basse { height: 220px; }
+  .carte { padding: 18px; }
+  .carte__titre { font-size: 1.1rem; }
+}
+
+/* ============================================================
+   Graphiques & visualisations
+   ============================================================ */
+
+.grille-graphiques { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; margin-bottom: 28px; }
+
+.graphique-conteneur { position: relative; height: 320px; width: 100%; }
+.graphique-conteneur--anneau { height: 280px; }
+.graphique-conteneur--basse { height: 240px; }
+.graphique-conteneur canvas { max-width: 100% !important; }
+
+/* Indispensable : sans min-width:0, un enfant de grille (canvas, tableau)
+   refuse de rétrécir sous sa largeur intrinsèque et fait déborder la page. */
+.grille-graphiques > *,
+.grille-graphiques--inverse > *,
+.dashboard-listes > *,
+.grille-fiche > *,
+.etats-grid > *,
+.stats-grid > * { min-width: 0; }
+
+.carte__entete { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 20px; }
+.carte__entete .carte__titre { margin-bottom: 0; }
+
+.legende-ligne { display: flex; gap: 18px; font-size: 0.8rem; font-weight: 600; color: var(--bleu-clair); }
+.legende-ligne span { display: inline-flex; align-items: center; gap: 7px; }
+.pastille { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+
+/* Tendance vs mois précédent sur les cartes de stats */
+.variation { display: inline-flex; align-items: center; gap: 4px; font-size: 0.74rem; font-weight: 700; margin-top: 5px; }
+.variation svg { width: 13px; height: 13px; }
+.variation--bonne { color: var(--teal-fonce); }
+.variation--mauvaise { color: var(--rouge); }
+
+/* Barres de progression (part d'une catégorie, taux de charges...) */
+.barre-progression { height: 7px; min-width: 70px; background: var(--gris-100); border-radius: var(--r-pill); overflow: hidden; }
+.barre-progression__remplissage { height: 100%; border-radius: var(--r-pill); transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
+
+/* Ligne de totaux en pied de tableau (journal) */
+table.data tfoot td { padding: 16px 18px; border-top: 2px solid var(--gris-300); font-weight: 700; color: var(--bleu-nuit); background: var(--gris-50); }
+
+/* Lien vers la fiche partenaire depuis un tableau */
+.lien-fiche { color: var(--bleu-vif); font-weight: 700; transition: color var(--transition); }
+.lien-fiche:hover { color: var(--bleu-nuit); text-decoration: underline; }
+
+.grille-graphiques--inverse { grid-template-columns: 2fr 1fr; }
+
+@media (max-width: 1100px) {
+  .grille-graphiques,
+  .grille-graphiques--inverse { grid-template-columns: 1fr; }
 }

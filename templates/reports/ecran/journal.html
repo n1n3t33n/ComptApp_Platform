@@ -1,4 +1,6 @@
 {% extends "base/base.html" %}
+{% load static %}
+{% load humanize %}
 
 {% block titre %}Journal des opérations — ComptApp{% endblock %}
 {% block titre_page %}Journal des opérations{% endblock %}
@@ -16,6 +18,18 @@
 </div>
 
 {% include "reports/_filtres_periode.html" with action_url='reports:journal' %}
+
+{% if lignes %}
+<div class="carte" style="margin-bottom:24px;">
+    <div class="carte__entete">
+        <h2 class="carte__titre">Évolution de la trésorerie</h2>
+        <span class="badge {% if solde_periode >= 0 %}badge--recette{% else %}badge--depense{% endif %}">
+            Solde de la période : {{ solde_periode|floatformat:0|intcomma }} FCFA
+        </span>
+    </div>
+    <div class="graphique-conteneur graphique-conteneur--basse"><canvas id="graphSolde"></canvas></div>
+</div>
+{% endif %}
 
 <div class="carte">
     {% if lignes %}
@@ -35,11 +49,18 @@
                     <td style="font-weight:600;">{{ l.description|truncatechars:30 }}</td>
                     <td>{{ l.categorie }}</td>
                     <td>{{ l.partenaire }}</td>
-                    <td style="text-align:right;" class="montant montant--recette">{% if l.recette %}+{{ l.recette|floatformat:0 }}{% else %}—{% endif %}</td>
-                    <td style="text-align:right;" class="montant montant--depense">{% if l.depense %}-{{ l.depense|floatformat:0 }}{% else %}—{% endif %}</td>
+                    <td style="text-align:right;" class="montant montant--recette">{% if l.recette %}+{{ l.recette|floatformat:0|intcomma }}{% else %}—{% endif %}</td>
+                    <td style="text-align:right;" class="montant montant--depense">{% if l.depense %}-{{ l.depense|floatformat:0|intcomma }}{% else %}—{% endif %}</td>
                 </tr>
                 {% endfor %}
             </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="5">Totaux de la période ({{ lignes|length }} opération{{ lignes|length|pluralize }})</td>
+                    <td style="text-align:right;" class="montant montant--recette">+{{ total_recettes|floatformat:0|intcomma }}</td>
+                    <td style="text-align:right;" class="montant montant--depense">-{{ total_depenses|floatformat:0|intcomma }}</td>
+                </tr>
+            </tfoot>
         </table>
     </div>
     {% else %}
@@ -49,4 +70,15 @@
     </div>
     {% endif %}
 </div>
+{% endblock %}
+
+{% block extra_js %}
+{% if lignes %}
+{{ graphique_solde|json_script:"donnees-solde" }}
+<script src="{% static 'js/chart.umd.min.js' %}"></script>
+<script src="{% static 'js/comptapp-graphiques.js' %}?v=3"></script>
+<script>
+    initGraphique(creerCourbeSolde, 'graphSolde', 'donnees-solde');
+</script>
+{% endif %}
 {% endblock %}

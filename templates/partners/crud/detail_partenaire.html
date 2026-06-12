@@ -1,0 +1,182 @@
+{% extends "base/base.html" %}
+{% load static %}
+{% load humanize %}
+
+{% block titre %}{{ partenaire.nom }} — ComptApp{% endblock %}
+{% block titre_page %}Fiche partenaire{% endblock %}
+
+{% block contenu %}
+<div class="page-header">
+    <div>
+        <h1 class="page-header__titre">
+            {{ partenaire.nom }}
+            {% if partenaire.type == 'CLIENT' %}
+                <span class="badge badge--client" style="vertical-align:middle;">Client</span>
+            {% else %}
+                <span class="badge badge--fournisseur" style="vertical-align:middle;">Fournisseur</span>
+            {% endif %}
+        </h1>
+        <p class="page-header__sous-titre">
+            {% if partenaire.activite %}{{ partenaire.activite }}{% else %}Historique complet des transactions{% endif %}
+        </p>
+    </div>
+    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <a href="{% url 'partners:modification_partenaire' partenaire.pk %}" class="btn btn--ghost">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4Z"/></svg>
+            Modifier
+        </a>
+        <a href="{% url 'partners:liste_partenaires' %}" class="btn btn--ghost">← Retour</a>
+    </div>
+</div>
+
+<div class="grille-fiche">
+    <!-- Colonne informations -->
+    <div class="carte">
+        <h2 class="carte__titre">Informations</h2>
+        <ul class="liste-infos">
+            <li><span>Secteur d'activité</span><strong>{{ partenaire.activite|default:"—" }}</strong></li>
+            <li><span>Personne à contacter</span><strong>{{ partenaire.contact|default:"—" }}</strong></li>
+            <li><span>Téléphone</span><strong>{{ partenaire.telephone|default:"—" }}</strong></li>
+            <li><span>Email</span><strong>{{ partenaire.email|default:"—" }}</strong></li>
+            <li><span>Ville</span><strong>{{ partenaire.ville|default:"—" }}</strong></li>
+            <li><span>Adresse</span><strong>{{ partenaire.adresse|default:"—"|linebreaksbr }}</strong></li>
+            <li><span>Enregistré le</span><strong>{{ partenaire.date_creation|date:"d/m/Y" }}</strong></li>
+        </ul>
+        {% if partenaire.notes %}
+        <div class="bloc-notes">
+            <div class="bloc-notes__titre">Notes internes</div>
+            <p>{{ partenaire.notes|linebreaksbr }}</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Colonne synthèse + graphiques -->
+    <div>
+        <div class="stats-grid" style="grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); margin-bottom:24px;">
+            <div class="stat-card">
+                <div class="stat-card__icon stat-card__icon--neutre">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                </div>
+                <div>
+                    <div class="stat-card__label">Transactions</div>
+                    <div class="stat-card__valeur">{{ nb_operations }}</div>
+                </div>
+            </div>
+            {% if partenaire.type == 'CLIENT' %}
+            <div class="stat-card">
+                <div class="stat-card__icon stat-card__icon--recette">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg>
+                </div>
+                <div>
+                    <div class="stat-card__label">Total facturé</div>
+                    <div class="stat-card__valeur positif">{{ total_recettes|floatformat:0|intcomma }} <small style="font-size:0.85rem;">FCFA</small></div>
+                </div>
+            </div>
+            {% else %}
+            <div class="stat-card">
+                <div class="stat-card__icon stat-card__icon--depense">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg>
+                </div>
+                <div>
+                    <div class="stat-card__label">Total dépensé</div>
+                    <div class="stat-card__valeur" style="color:var(--orange);">{{ total_depenses|floatformat:0|intcomma }} <small style="font-size:0.85rem;">FCFA</small></div>
+                </div>
+            </div>
+            {% endif %}
+            <div class="stat-card">
+                <div class="stat-card__icon stat-card__icon--solde">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                </div>
+                <div>
+                    <div class="stat-card__label">Solde</div>
+                    <div class="stat-card__valeur {% if solde >= 0 %}positif{% else %}negatif{% endif %}">{{ solde|floatformat:0|intcomma }} <small style="font-size:0.85rem;">FCFA</small></div>
+                </div>
+            </div>
+        </div>
+
+        {% if operations %}
+        <div class="carte">
+            <div class="carte__entete">
+                <h2 class="carte__titre">Volume mensuel des transactions</h2>
+            </div>
+            <div class="graphique-conteneur graphique-conteneur--basse"><canvas id="graphMensuel"></canvas></div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+{% if operations %}
+<div class="carte" style="margin-top:24px;">
+    <div class="carte__entete">
+        <h2 class="carte__titre">Évolution du solde cumulé</h2>
+    </div>
+    <div class="graphique-conteneur graphique-conteneur--basse"><canvas id="graphSoldePartenaire"></canvas></div>
+</div>
+{% endif %}
+
+<div class="carte" style="margin-top:24px;">
+    <h2 class="carte__titre">Historique des transactions</h2>
+    {% if operations %}
+    <div class="table-wrap">
+        <table class="data">
+            <thead>
+                <tr>
+                    <th>Date</th><th>Sens</th><th>Description</th><th>Catégorie</th>
+                    <th style="text-align:right;">Recette</th>
+                    <th style="text-align:right;">Dépense</th>
+                    <th style="text-align:right;">Solde cumulé</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for op in operations %}
+                <tr>
+                    <td>{{ op.date|date:"d/m/Y" }}</td>
+                    <td>
+                        {% if op.sens == 'Recette' %}<span class="badge badge--recette">Recette</span>
+                        {% else %}<span class="badge badge--depense">Dépense</span>{% endif %}
+                    </td>
+                    <td style="font-weight:600;">{{ op.description|truncatechars:36 }}</td>
+                    <td>{{ op.categorie }}</td>
+                    <td style="text-align:right;" class="montant montant--recette">{% if op.recette %}+{{ op.recette|floatformat:0|intcomma }}{% else %}—{% endif %}</td>
+                    <td style="text-align:right;" class="montant montant--depense">{% if op.depense %}-{{ op.depense|floatformat:0|intcomma }}{% else %}—{% endif %}</td>
+                    <td style="text-align:right;" class="montant {% if op.solde_cumule >= 0 %}montant--recette{% else %}montant--depense{% endif %}">{{ op.solde_cumule|floatformat:0|intcomma }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="vide">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        <p>Aucune transaction enregistrée pour ce partenaire.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.grille-fiche { display:grid; grid-template-columns: 340px 1fr; gap:24px; align-items:start; }
+.liste-infos li { display:flex; justify-content:space-between; gap:16px; padding:11px 0; border-bottom:1px solid var(--gris-100); font-size:0.9rem; }
+.liste-infos li:last-child { border-bottom:none; }
+.liste-infos li span { color:var(--bleu-clair); flex-shrink:0; }
+.liste-infos li strong { text-align:right; color:var(--bleu-nuit); }
+.bloc-notes { margin-top:18px; background:var(--gris-50); border-radius:var(--r-md); padding:14px 16px; }
+.bloc-notes__titre { font-size:0.78rem; font-weight:700; color:var(--bleu-clair); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px; }
+.bloc-notes p { font-size:0.88rem; color:var(--bleu-nuit); line-height:1.6; }
+@media (max-width: 900px) { .grille-fiche { grid-template-columns:1fr; } }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+{% if operations %}
+{{ graphique_solde|json_script:"donnees-solde-partenaire" }}
+{{ graphique_mensuel|json_script:"donnees-mensuel" }}
+<script src="{% static 'js/chart.umd.min.js' %}"></script>
+<script src="{% static 'js/comptapp-graphiques.js' %}?v=3"></script>
+<script>
+    initGraphique(creerBarresGroupees, 'graphMensuel', 'donnees-mensuel');
+    initGraphique(creerCourbeSolde, 'graphSoldePartenaire', 'donnees-solde-partenaire');
+</script>
+{% endif %}
+{% endblock %}

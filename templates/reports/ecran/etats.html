@@ -1,4 +1,7 @@
 {% extends "base/base.html" %}
+{% load static %}
+{% load humanize %}
+{% load l10n %}
 
 {% block titre %}États par catégorie — ComptApp{% endblock %}
 {% block titre_page %}États par catégorie{% endblock %}
@@ -21,14 +24,23 @@
     <div class="carte">
         <h2 class="carte__titre">Recettes par catégorie</h2>
         {% if etats.recettes_par_categorie %}
-        <div class="table-wrap">
+        <div class="graphique-conteneur graphique-conteneur--anneau"><canvas id="graphRecettes"></canvas></div>
+        <div class="table-wrap" style="margin-top:18px;">
             <table class="data">
-                <thead><tr><th>Catégorie</th><th style="text-align:right;">Total</th></tr></thead>
+                <thead><tr><th>Catégorie</th><th>Part</th><th style="text-align:right;">Total</th></tr></thead>
                 <tbody>
                     {% for ligne in etats.recettes_par_categorie %}
                     <tr>
                         <td><span class="badge badge--recette">{{ ligne.categorie__libelle }}</span></td>
-                        <td style="text-align:right;" class="montant montant--recette">+{{ ligne.total|floatformat:0 }}</td>
+                        <td>
+                            <div style="display:flex; align-items:center; gap:10px;">
+                                <div class="barre-progression" style="flex:1;">
+                                    <div class="barre-progression__remplissage" style="width:{{ ligne.pourcentage|unlocalize }}%; background:var(--teal);"></div>
+                                </div>
+                                <span style="font-size:0.78rem; font-weight:600; color:var(--bleu-clair); min-width:44px; text-align:right;">{{ ligne.pourcentage }} %</span>
+                            </div>
+                        </td>
+                        <td style="text-align:right;" class="montant montant--recette">+{{ ligne.total|floatformat:0|intcomma }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -40,14 +52,23 @@
     <div class="carte">
         <h2 class="carte__titre">Dépenses par catégorie</h2>
         {% if etats.depenses_par_categorie %}
-        <div class="table-wrap">
+        <div class="graphique-conteneur graphique-conteneur--anneau"><canvas id="graphDepenses"></canvas></div>
+        <div class="table-wrap" style="margin-top:18px;">
             <table class="data">
-                <thead><tr><th>Catégorie</th><th style="text-align:right;">Total</th></tr></thead>
+                <thead><tr><th>Catégorie</th><th>Part</th><th style="text-align:right;">Total</th></tr></thead>
                 <tbody>
                     {% for ligne in etats.depenses_par_categorie %}
                     <tr>
                         <td><span class="badge badge--depense">{{ ligne.categorie__libelle }}</span></td>
-                        <td style="text-align:right;" class="montant montant--depense">-{{ ligne.total|floatformat:0 }}</td>
+                        <td>
+                            <div style="display:flex; align-items:center; gap:10px;">
+                                <div class="barre-progression" style="flex:1;">
+                                    <div class="barre-progression__remplissage" style="width:{{ ligne.pourcentage|unlocalize }}%; background:var(--orange);"></div>
+                                </div>
+                                <span style="font-size:0.78rem; font-weight:600; color:var(--bleu-clair); min-width:44px; text-align:right;">{{ ligne.pourcentage }} %</span>
+                            </div>
+                        </td>
+                        <td style="text-align:right;" class="montant montant--depense">-{{ ligne.total|floatformat:0|intcomma }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -59,3 +80,14 @@
 {% endblock %}
 
 {% block extra_css %}<style>@media(max-width:900px){.etats-grid{grid-template-columns:1fr !important;}}</style>{% endblock %}
+
+{% block extra_js %}
+{{ graphique_recettes|json_script:"donnees-recettes" }}
+{{ graphique_depenses|json_script:"donnees-depenses" }}
+<script src="{% static 'js/chart.umd.min.js' %}"></script>
+<script src="{% static 'js/comptapp-graphiques.js' %}?v=3"></script>
+<script>
+    initGraphique(creerAnneau, 'graphRecettes', 'donnees-recettes');
+    initGraphique(creerAnneau, 'graphDepenses', 'donnees-depenses');
+</script>
+{% endblock %}

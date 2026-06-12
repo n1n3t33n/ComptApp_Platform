@@ -19,8 +19,8 @@
 <div class="carte" style="margin-bottom:24px;">
     <form method="get" class="filtres">
         <div class="form-groupe" style="flex:2; min-width:200px;">
-            <label>Recherche par nom</label>
-            <input type="text" name="q" value="{{ recherche }}" placeholder="Nom du partenaire...">
+            <label>Recherche</label>
+            <input type="text" name="q" value="{{ recherche }}" placeholder="Nom, activité ou ville...">
         </div>
         <div class="form-groupe" style="flex:1; min-width:160px;">
             <label>Type</label>
@@ -43,15 +43,16 @@
                 <tr>
                     <th>Nom / Raison sociale</th>
                     <th>Type</th>
+                    <th>Activité</th>
+                    <th>Ville</th>
                     <th>Téléphone</th>
-                    <th>Email</th>
                     <th style="text-align:right;">Actions</th>
                 </tr>
             </thead>
             <tbody>
                 {% for p in partenaires %}
                 <tr>
-                    <td style="font-weight:600;">{{ p.nom }}</td>
+                    <td style="font-weight:600;"><a href="{% url 'partners:detail_partenaire' p.pk %}" class="lien-fiche">{{ p.nom }}</a></td>
                     <td>
                         {% if p.type == 'CLIENT' %}
                             <span class="badge badge--client">Client</span>
@@ -59,9 +60,13 @@
                             <span class="badge badge--fournisseur">Fournisseur</span>
                         {% endif %}
                     </td>
+                    <td>{{ p.activite|default:"—" }}</td>
+                    <td>{{ p.ville|default:"—" }}</td>
                     <td>{{ p.telephone|default:"—" }}</td>
-                    <td>{{ p.email|default:"—" }}</td>
                     <td style="text-align:right; white-space:nowrap;">
+                        <a href="{% url 'partners:detail_partenaire' p.pk %}" class="btn btn--ghost btn--sm" title="Voir la fiche">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                        </a>
                         <a href="{% url 'partners:modification_partenaire' p.pk %}" class="btn btn--ghost btn--sm" title="Modifier">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4Z"/></svg>
                         </a>

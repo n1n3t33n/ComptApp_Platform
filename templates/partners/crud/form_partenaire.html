@@ -29,6 +29,16 @@
                 {% if form.nom.errors %}<div class="form-erreur">{{ form.nom.errors.0 }}</div>{% endif %}
             </div>
             <div class="form-groupe">
+                <label for="{{ form.activite.id_for_label }}">Secteur d'activité</label>
+                {{ form.activite }}
+                {% if form.activite.errors %}<div class="form-erreur">{{ form.activite.errors.0 }}</div>{% endif %}
+            </div>
+            <div class="form-groupe">
+                <label for="{{ form.contact.id_for_label }}">Personne à contacter</label>
+                {{ form.contact }}
+                {% if form.contact.errors %}<div class="form-erreur">{{ form.contact.errors.0 }}</div>{% endif %}
+            </div>
+            <div class="form-groupe">
                 <label for="{{ form.telephone.id_for_label }}">Téléphone</label>
                 {{ form.telephone }}
                 {% if form.telephone.errors %}<div class="form-erreur">{{ form.telephone.errors.0 }}</div>{% endif %}
@@ -38,10 +48,20 @@
                 {{ form.email }}
                 {% if form.email.errors %}<div class="form-erreur">{{ form.email.errors.0 }}</div>{% endif %}
             </div>
+            <div class="form-groupe">
+                <label for="{{ form.ville.id_for_label }}">Ville</label>
+                {{ form.ville }}
+                {% if form.ville.errors %}<div class="form-erreur">{{ form.ville.errors.0 }}</div>{% endif %}
+            </div>
             <div class="form-groupe pleine-largeur">
                 <label for="{{ form.adresse.id_for_label }}">Adresse</label>
                 {{ form.adresse }}
                 {% if form.adresse.errors %}<div class="form-erreur">{{ form.adresse.errors.0 }}</div>{% endif %}
+            </div>
+            <div class="form-groupe pleine-largeur">
+                <label for="{{ form.notes.id_for_label }}">Notes internes</label>
+                {{ form.notes }}
+                {% if form.notes.errors %}<div class="form-erreur">{{ form.notes.errors.0 }}</div>{% endif %}
             </div>
         </div>
 

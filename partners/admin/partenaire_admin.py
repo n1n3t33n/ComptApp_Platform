@@ -6,6 +6,6 @@ from partners.models import Partenaire
 
 @admin.register(Partenaire)
 class PartenaireAdmin(admin.ModelAdmin):
-    list_display = ["nom", "type", "telephone", "email", "date_creation"]
-    list_filter = ["type"]
-    search_fields = ["nom", "email"]
+    list_display = ["nom", "type", "activite", "ville", "telephone", "email", "date_creation"]
+    list_filter = ["type", "activite", "ville"]
+    search_fields = ["nom", "email", "activite", "contact", "ville"]
